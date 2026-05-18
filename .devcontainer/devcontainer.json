@@ -1,0 +1,21 @@
+{
+  "name": "Circle Agent Wallet",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "postCreateCommand": "npm install && npm install -g @circle-fin/cli",
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Circle Agent Wallet UI",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next"
+      ]
+    }
+  }
+}
