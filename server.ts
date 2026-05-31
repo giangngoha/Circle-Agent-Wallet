@@ -16,10 +16,12 @@ async function startServer() {
 
   // Helper: run Circle CLI and return parsed JSON output
   const runCircle = async (args: string) => {
+    // Try global 'circle' first, fallback to npx (with install allowed)
+    const cmd = `circle ${args}`;
     try {
-      const { stdout, stderr } = await execAsync(
-        `npx --no-install @circle-fin/cli ${args}`
-      );
+      const { stdout, stderr } = await execAsync(cmd, {
+        env: { ...process.env, PATH: `${process.env.HOME}/.npm-global/bin:/usr/local/bin:/usr/bin:/bin:${process.env.PATH}` }
+      });
       if (stderr && !stdout) throw new Error(stderr);
       return JSON.parse(stdout);
     } catch (error: any) {
@@ -70,7 +72,8 @@ async function startServer() {
     const { email } = req.body;
     try {
       const { stdout } = await execAsync(
-        `npx --no-install @circle-fin/cli wallet login ${email} --init`
+        `circle wallet login ${email} --init`,
+        { env: { ...process.env, PATH: `${process.env.HOME}/.npm-global/bin:/usr/local/bin:/usr/bin:/bin:${process.env.PATH}` } }
       );
       const match = stdout.match(/--request ([a-f0-9-]+)/);
       const requestId = match ? match[1] : null;
@@ -84,7 +87,8 @@ async function startServer() {
     const { requestId, otp } = req.body;
     try {
       const { stdout } = await execAsync(
-        `npx --no-install @circle-fin/cli wallet login --request ${requestId} --otp ${otp}`
+        `circle wallet login --request ${requestId} --otp ${otp}`,
+        { env: { ...process.env, PATH: `${process.env.HOME}/.npm-global/bin:/usr/local/bin:/usr/bin:/bin:${process.env.PATH}` } }
       );
       res.json({ success: true, message: stdout });
     } catch (e: any) {
@@ -128,7 +132,21 @@ async function startServer() {
   app.get("/api/services/search", async (req, res) => {
     const { q } = req.query;
     try {
-      res.json(await runCircle(`services search "${q}" --output json`));
+      const raw = await runCircle(`services search "${q}" --output json`);
+      // CLI returns { data: { services: [...], pagination: {...} } }
+      const services = raw?.data?.items ?? raw?.data?.services ?? raw?.services ?? raw?.data ?? [];
+      const normalized = (Array.isArray(services) ? services : []).map((s: any) => ({
+        name: s.metadata?.provider?.name ?? s.resource ?? "",
+        url: s.resource ?? "",
+        description: s.metadata?.description ?? "",
+        price: s.accepts?.[0]?.amount
+          ? (parseInt(s.accepts[0].amount) / 1_000_000).toFixed(4) + ""
+          : undefined,
+        supportsGateway: s.metadata?.supportsCircleGateway ?? false,
+        supportsVanilla: s.metadata?.supportsVanillax402 ?? false,
+        accepts: s.accepts ?? [],
+      }));
+      res.json({ data: { services: normalized } });
     } catch (e: any) {
       res.status(500).json({ error: e.message });
     }
@@ -159,10 +177,10 @@ async function startServer() {
 
   // ── Gateway ───────────────────────────────────────────────
   app.get("/api/gateway/balance", async (req, res) => {
-    const { chain } = req.query;
+    const { chain, address } = req.query;
     try {
       res.json(
-        await runCircle(`gateway balance --chain ${chain ?? "BASE"} --output json`)
+        await runCircle(`gateway balance --address ${address} --chain ${chain ?? "BASE"} --output json`)
       );
     } catch (e: any) {
       res.status(500).json({ error: e.message });

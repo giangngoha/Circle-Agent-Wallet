@@ -12,20 +12,6 @@ Walks you through every step from `setup.md` (`https://agents.circle.com/skills/
 4. **Balance** — Check USDC balances and get funding instructions
 5. **Services** — Search the Agent Marketplace (537+ paid endpoints)
 
-## Run in GitHub Codespaces (Recommended)
-
-> No local setup needed. Free GitHub account works.
-
-1. Open this repo on GitHub
-2. Click **Code → Codespaces → Create codespace on main**
-3. Wait for the container to build (~1 min — installs Node + Circle CLI automatically)
-4. In the terminal, run:
-   ```bash
-   npm run dev
-   ```
-5. Codespaces will prompt you to **Open in Browser** — click it
-6. Follow the UI step by step
-
 ## Run Locally
 
 **Prerequisites:** Node.js 18+
