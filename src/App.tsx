@@ -1141,7 +1141,6 @@ function PayModal({ service, wallets, balances, onClose, onSuccess, initialQuery
                               <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
                                 {[
                                   { label: "🌐 Global (1)", val: "1" },
-                                  { label: "🇻🇳 Vietnam (23424984)", val: "23424984" },
                                   { label: "🇺🇸 USA (23424977)", val: "23424977" },
                                   { label: "🇯🇵 Japan (23424856)", val: "23424856" },
                                   { label: "🇬🇧 UK (23424908)", val: "23424908" },
@@ -1160,13 +1159,12 @@ function PayModal({ service, wallets, balances, onClose, onSuccess, initialQuery
                               </div>
                             )}
                             {key === "query" && (
-                              <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6 }}>
+                              <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 6, opacity: 0.9 }}>
                                 {[
-                                  { label: "🔥 Trend Crypto Today", val: "trend crypto today" },
-                                  { label: "💎 Meme Gem Sol", val: "meme gem sol" },
-                                  { label: "🚀 #memecoin", val: "#memecoin" },
-                                  { label: "📈 #crypto", val: "#crypto" },
-                                  { label: "🪙 #bitcoin", val: "#bitcoin" }
+                                  { label: "🔥 Meme SOL (Hot & Recent)", val: "meme sol since:2026-06-01 min_faves:200" },
+                                  { label: "💎 Meme ETH (Hot & Recent)", val: "meme eth since:2026-06-01 min_faves:200" },
+                                  { label: "🔵 Meme Base", val: "meme base since:2026-06-01 min_faves:100" },
+                                  { label: "🚀 KOLs Crypto", val: "#crypto min_faves:2000 since:2026-06-01" },
                                 ].map(p => (
                                   <button
                                     key={p.val}
@@ -1178,6 +1176,9 @@ function PayModal({ service, wallets, balances, onClose, onSuccess, initialQuery
                                     {p.label}
                                   </button>
                                 ))}
+                                <div style={{width: "100%", fontSize: 11, color: "var(--text3)", marginTop: 4}}>
+                                  * Tip: Add <b>since:2026-06-01</b> for recent posts, and <b>min_faves:1000</b> for high-engagement KOL posts!
+                                </div>
                               </div>
                             )}
                           </>
@@ -1636,7 +1637,7 @@ export default function App() {
               <div className="search-wrap">
                 <input
                   className="search-inp"
-                  placeholder='Search services… e.g. "eth price", "nft", "twitter"'
+                  placeholder='Search services… e.g. "eth price", "nft", "x"'
                   value={query}
                   onChange={e => setQuery(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && searchServices()}
@@ -1646,20 +1647,20 @@ export default function App() {
                 </button>
               </div>
               <div className="row" style={{ marginTop: 12 }}>
-                {["eth price", "nft", "bitcoin", "twitter", "domain"].map(q => (
+                {["eth price", "nft", "bitcoin", "x", "domain"].map(q => (
                   <button key={q} className="suggestion" onClick={() => setQuery(q)}>
                     {q}
                   </button>
                 ))}
               </div>
 
-              {/* Real-time X/Twitter Trend Scanner Shortcuts */}
+              {/* Real-time X Trend Scanner Shortcuts */}
               <div style={{ marginTop: 20, padding: "14px 16px", background: "rgba(29, 155, 240, 0.05)", borderRadius: 8, border: "1px solid rgba(29, 155, 240, 0.15)" }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: "#1d9bf0", display: "flex", alignItems: "center", gap: 6, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>
-                  <span>🔥</span> Early Crypto & Meme Trend Scanner (𝕏/Twitter)
+                  <span>🔥</span> Early Crypto & Meme Trend Scanner (𝕏)
                 </div>
                 <div style={{ fontSize: 12, color: "var(--text2)", marginBottom: 12, lineHeight: 1.4 }}>
-                  Scan real-time 𝕏 trends or do advanced tweet searches to uncover high-potential coins (meme gems, protocols) before they hit major trackers.
+                  Scan 𝕏 trends and analyze advanced tweet signals to discover early crypto & meme gems.
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 8 }}>
                   <button 
@@ -1675,7 +1676,7 @@ export default function App() {
                       });
                     }}
                   >
-                    📈 Search 𝕏/Twitter Trends
+                    📈 Search 𝕏 Trends
                   </button>
                   <button 
                     className="btn btn-ghost btn-sm" 
